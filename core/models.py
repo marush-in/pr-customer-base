@@ -19,7 +19,7 @@ class Customer(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
     professions = models.ManyToManyField(Profession)
-    deta_sheet = models.OneToOneField(DataSheet, on_delete=models.CASCADE , null=True, blank=True)
+    data_sheet = models.OneToOneField(DataSheet, on_delete=models.CASCADE , null=True, blank=True)
 
     def __str__(self):
         return self.name
