@@ -20,6 +20,7 @@ class Customer(models.Model):
     address = models.CharField(max_length=50)
     professions = models.ManyToManyField(Profession)
     data_sheet = models.OneToOneField(DataSheet, on_delete=models.CASCADE , null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
