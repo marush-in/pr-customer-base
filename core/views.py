@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from rest_framework import viewsets
+from rest_framework.response import Response
 
 from .models import Customer, Profession, DataSheet, Document
 from .serializers import(
@@ -18,6 +19,11 @@ class CustomerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         active_customers = Customer.objects.filter(is_active=True)
         return active_customers
+
+    def list(self, request, *args, **kwargs):
+        customers = Customer.objects.filter(id=1)
+        serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data)
 
 
 class ProfessionViewSet(viewsets.ModelViewSet):
