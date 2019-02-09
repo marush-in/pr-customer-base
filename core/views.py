@@ -1,5 +1,5 @@
+from django.http.response import HttpResponseNotAllowed
 from django.shortcuts import render
-
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -24,6 +24,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
         customers = Customer.objects.filter(id=1)
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed('NOT ALLOWED.')
 
 
 class ProfessionViewSet(viewsets.ModelViewSet):
