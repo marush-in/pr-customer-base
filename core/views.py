@@ -60,6 +60,17 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
+    
+    def partial_update(self, request, *args, **kwargs):
+        customer = self.get_object()
+        customer.name = request.data.get('name', customer.name)
+        customer.address = request.data.get('address', customer.address)
+        customer.data_sheet_id = request.data.get('data_sheet', data_sheet_id.name)
+        customer.save()
+
+        serializer = CustomerSerializer(customer)
+
+        return Response(serializer.data)
 
     
 class ProfessionViewSet(viewsets.ModelViewSet):
