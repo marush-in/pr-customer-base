@@ -20,10 +20,10 @@ class CustomerViewSet(viewsets.ModelViewSet):
         active_customers = Customer.objects.filter(is_active=True)
         return active_customers
 
-    def list(self, request, *args, **kwargs):
-        customers = Customer.objects.filter(id=1)
-        serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data)
+    # def list(self, request, *args, **kwargs):
+    #     customers = Customer.objects.filter(id=1)
+    #     serializer = CustomerSerializer(customers, many=True)
+    #     return Response(serializer.data)
 
     # def retrieve(self, request, *args, **kwargs):
     #     return HttpResponseNotAllowed('NOT ALLOWED.')
@@ -71,7 +71,12 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
+    
+    def destroy(self, request, *args, **kwargs):
+        customer = self.get_object()
+        customer.delete()
 
+        return Response('Object Removed.')
     
 class ProfessionViewSet(viewsets.ModelViewSet):
     queryset = Profession.objects.all()
