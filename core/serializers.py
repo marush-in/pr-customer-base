@@ -37,7 +37,17 @@ class CustomerSerializer(serializers.ModelSerializer):
         professions = validated_data['professions']
         del validated_data['professions']
 
+        document_set = validated_data['document_set']
+        del validated_data['document_set']
+
         customer = Customer.objects.create(**validated_data)
+
+        for doc in document_set:
+            Document.objects.create(
+                dtype=doc['dtype'],
+                doc_number=doc['doc_number'],
+                customer_id=customer.id,
+            )
 
         for profession in professions:
             prof = Profession.objects.create(**profession)
