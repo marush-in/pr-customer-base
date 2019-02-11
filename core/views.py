@@ -1,15 +1,15 @@
-from django.http.response import HttpResponseNotAllowed
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .models import Customer, Profession, DataSheet, Document
-from .serializers import(
+from .serializers import (
     CustomerSerializer,
-    ProfessionSerializer, 
+    ProfessionSerializer,
     DataSheetSerializer,
     DocumentSerializer,
 )
@@ -23,6 +23,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     ordering_fields = '__all__'
     ordering = ('-id')
     lookup_field = 'doc_num'
+    authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
         address = self.request.query_params.get('address', None)
@@ -33,7 +34,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
             status = True
 
         if address:
-            customers = Customer.objects.filter(address__icontains=address, is_active=status)
+            customers = Customer.objects.filter(
+                address__icontains=address, is_active=status
+            )
         else:
             customers = Customer.objects.filter(is_active=status)
         return customers
@@ -60,7 +63,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         customer.save()
 
         serializer = CustomerSerializer(customer)
-        
+
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
@@ -80,24 +83,26 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
-    
+
     def partial_update(self, request, *args, **kwargs):
         customer = self.get_object()
         customer.name = request.data.get('name', customer.name)
         customer.address = request.data.get('address', customer.address)
-        customer.data_sheet_id = request.data.get('data_sheet', data_sheet_id.name)
+        customer.data_sheet_id = request.data.get(
+            'data_sheet', customer.data_sheet_id.name
+        )
         customer.save()
 
         serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
-    
+
     def destroy(self, request, *args, **kwargs):
         customer = self.get_object()
         customer.delete()
 
         return Response('Object Removed.')
-    
+
     @action(detail=True)
     def deactivate(self, request, **kwargs):
         customer = self.get_object()
@@ -107,7 +112,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerSerializer(customer)
 
         return Response(serializer.data)
-    
+
     @action(detail=False)
     def deactivate_all(self, request, **kwargs):
         customers = self.get_queryset()
@@ -128,7 +133,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['POST'])
     def change_status(self, request, **kwargs):
-        status = True if request.data['is_active'] == True else False
+        status = True if request.data['is_active'] == 'True' else False
         customers = self.get_queryset()
         customers.update(is_active=status)
 
@@ -140,11 +145,13 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class ProfessionViewSet(viewsets.ModelViewSet):
     queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
+    authentication_classes = [TokenAuthentication]
 
 
 class DataSheetViewSet(viewsets.ModelViewSet):
     queryset = DataSheet.objects.all()
     serializer_class = DataSheetSerializer
+    permission_classes = [AllowAny]
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
