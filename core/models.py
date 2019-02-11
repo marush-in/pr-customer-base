@@ -7,6 +7,7 @@ class Profession(models.Model):
     def __str__(self):
         return self.description
 
+
 class DataSheet(models.Model):
     description = models.CharField(max_length=50)
     historical_data = models.TextField()
@@ -19,7 +20,9 @@ class Customer(models.Model):
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=50)
     professions = models.ManyToManyField(Profession)
-    data_sheet = models.OneToOneField(DataSheet, on_delete=models.CASCADE , null=True, blank=True)
+    data_sheet = models.OneToOneField(
+        DataSheet, on_delete=models.CASCADE, null=True, blank=True
+    )
     is_active = models.BooleanField(default=True)
     doc_num = models.CharField(max_length=12, unique=True)
 
@@ -29,6 +32,9 @@ class Customer(models.Model):
             return "Customer is acitve"
         else:
             return "Customer is not acitve"
+
+    def number_professions(self):
+        return self.professions.all().count()
 
     def __str__(self):
         return self.name
