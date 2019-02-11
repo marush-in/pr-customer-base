@@ -28,7 +28,9 @@ class Customer(models.Model):
         DataSheet, on_delete=models.CASCADE, null=True, blank=True
     )
     is_active = models.BooleanField(default=True)
-    doc_num = models.CharField(max_length=12, unique=True)
+    doc_num = models.CharField(
+        max_length=12, unique=True, null=True, blank=True
+    )
 
     @property
     def status_message(self):

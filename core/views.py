@@ -58,20 +58,20 @@ class CustomerViewSet(viewsets.ModelViewSet):
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        customer = Customer.objects.create(
-            name=data['name'],
-            address=data['address'],
-            data_sheet_id=data['data_sheet'],
-        )
-        profession = Profession.objects.get(id=data['professions'])
-        customer.professions.add(profession)
-        customer.save()
+    # def create(self, request, *args, **kwargs):
+    #     data = request.data
+    #     customer = Customer.objects.create(
+    #         name=data['name'],
+    #         address=data['address'],
+    #         data_sheet_id=data['data_sheet'],
+    #     )
+    #     profession = Profession.objects.get(id=data['professions'])
+    #     customer.professions.add(profession)
+    #     customer.save()
 
-        serializer = CustomerSerializer(customer)
+    #     serializer = CustomerSerializer(customer)
 
-        return Response(serializer.data)
+    #     return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         customer = self.get_object()
