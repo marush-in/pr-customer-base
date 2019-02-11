@@ -23,7 +23,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
     ordering_fields = '__all__'
     ordering = ('-id')
 
-
     def get_queryset(self):
         address = self.request.query_params.get('address', None)
 
@@ -136,8 +135,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-
-    
 
 class ProfessionViewSet(viewsets.ModelViewSet):
     queryset = Profession.objects.all()
