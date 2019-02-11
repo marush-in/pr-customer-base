@@ -1,4 +1,5 @@
 from django.http.response import HttpResponseNotAllowed
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -14,8 +15,9 @@ from .serializers import(
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('name',)
 
     def get_queryset(self):
         address = self.request.query_params.get('address', None)
@@ -31,10 +33,10 @@ class CustomerViewSet(viewsets.ModelViewSet):
             customers = Customer.objects.filter(is_active=status)
         return customers
 
-    def list(self, request, *args, **kwargs):
-        customers = self.get_queryset()
-        serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data)
+    # def list(self, request, *args, **kwargs):
+    #     customers = self.get_queryset()
+    #     serializer = CustomerSerializer(customers, many=True)
+    #     return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         customer = self.get_object()
