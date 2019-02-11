@@ -2,10 +2,22 @@ from rest_framework import serializers
 from .models import Customer, Profession, DataSheet, Document
 
 
+class DataSheetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DataSheet
+        fields = ('id', 'description', 'historical_data')
+
+
+class ProfessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profession
+        fields = ('id', 'description', 'status')
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     number_professions = serializers.SerializerMethodField()
-    data_sheet = serializers.PrimaryKeyRelatedField(read_only=True)
-    professions = serializers.StringRelatedField(many=True)
+    data_sheet = DataSheetSerializer()
+    professions = ProfessionSerializer(many=True)
     document_set = serializers.StringRelatedField(many=True)
 
     class Meta:
@@ -17,18 +29,6 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     def get_number_professions(self, obj):
         return obj.number_professions()
-
-
-class ProfessionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profession
-        fields = ('id', 'description')
-
-
-class DataSheetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DataSheet
-        fields = ('id', 'description', 'historical_data')
 
 
 class DocumentSerializer(serializers.ModelSerializer):
