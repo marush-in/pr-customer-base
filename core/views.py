@@ -3,7 +3,11 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticatedOrReadOnly,
+    IsAdminUser,
+)
 from rest_framework.response import Response
 
 from .models import Customer, Profession, DataSheet, Document
@@ -24,6 +28,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     ordering = ('-id')
     lookup_field = 'doc_num'
     authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self):
         address = self.request.query_params.get('address', None)
@@ -157,3 +162,5 @@ class DataSheetViewSet(viewsets.ModelViewSet):
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
