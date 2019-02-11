@@ -7,6 +7,8 @@ from rest_framework.permissions import (
     AllowAny,
     IsAuthenticatedOrReadOnly,
     IsAdminUser,
+    DjangoModelPermissions,
+    DjangoModelPermissionsOrAnonReadOnly,
 )
 from rest_framework.response import Response
 
@@ -163,4 +165,4 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
